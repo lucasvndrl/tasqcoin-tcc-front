@@ -1,4 +1,12 @@
-import { FormControl, FormHelperText, Input, Stack } from '@mui/material';
+import {
+  FormControl,
+  FormHelperText,
+  Input,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+} from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -16,6 +24,18 @@ type CreateFeedbackForm = {
   targetUser: UserData | undefined;
   amount: number;
   description: string;
+  coin_type: string;
+};
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
 };
 
 export const FeedbackCreateModal = () => {
@@ -30,6 +50,8 @@ export const FeedbackCreateModal = () => {
 
   const [inputValue, setInputValue, debouncedInputValue] = useDebounceState('');
   const [options, setOptions] = useState<UserData[]>([]);
+  const [coinType, setCoinType] = useState('L');
+
   const {
     errors,
     isSubmitting,
@@ -44,6 +66,7 @@ export const FeedbackCreateModal = () => {
       targetUser: undefined,
       amount: 0,
       description: '',
+      coin_type: coinType,
     },
     onSubmit: async ({ targetUser, ...rest }) =>
       services.feedback
@@ -106,6 +129,19 @@ export const FeedbackCreateModal = () => {
             isOptionEqualToValue={(option, val) => option.alias === val.alias}
             filterOptions={(x) => x}
           />
+          <FormControl fullWidth>
+            <InputLabel>Tipo de moeda</InputLabel>
+            <Select
+              label="Tipo de moeda"
+              value={coinType}
+              defaultValue="Ligth"
+              onChange={(e) => setCoinType(e.target.value)}
+              MenuProps={MenuProps}
+            >
+              <MenuItem value="L">Ligth coin</MenuItem>
+              <MenuItem value="D">Dark coin</MenuItem>
+            </Select>
+          </FormControl>
           <Typography variant="body1" sx={{ mt: 2 }}>
             Quantidade de Pontos
           </Typography>

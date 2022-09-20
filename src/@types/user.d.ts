@@ -4,6 +4,7 @@ type UserData = {
   email: string;
   avatar_url?: string;
   balance: number;
+  dark_balance: number;
   [x: string]: unknown;
 };
 
@@ -20,6 +21,7 @@ type UserSignUpResponse = {
   password: string;
   email: string;
   balance: number;
+  dark_balance: number;
   is_admin: boolean;
   avatar: string;
   created_at: Date;

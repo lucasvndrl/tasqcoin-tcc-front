@@ -90,7 +90,7 @@ export const FeedbackProvider: FC = ({ children }) => {
       .then(({ data: { name, ...rest } }) => {
         setTargetUser({
           ...rest,
-          name: `${targetUserId ? '' : 'Olá '}${name}`,
+          name: `${targetUserId ? '' : 'Olá, '}${name}`,
         });
       });
   }, [targetUserId]);

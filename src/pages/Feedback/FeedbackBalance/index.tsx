@@ -13,15 +13,22 @@ export const FeedbackBalance = () => {
     <Grid container columns={[1, 2, 3, 5]} spacing={5}>
       <Grid item xs={1}>
         <FeedbackBalanceCard
-          title="Saldo Atual"
+          title="Balance"
           amount={balance}
           icon={<Paid color="secondary" />}
         />
       </Grid>
       <Grid item xs={1}>
         <FeedbackBalanceCard
-          title="Pontos a distribuir"
+          title="Light coins"
           amount={targetUser?.balance}
+          icon={<Savings color="secondary" />}
+        />
+      </Grid>
+      <Grid item xs={1}>
+        <FeedbackBalanceCard
+          title="Dark coins"
+          amount={targetUser?.dark_balance}
           icon={<Savings color="secondary" />}
         />
       </Grid>
@@ -31,7 +38,7 @@ export const FeedbackBalance = () => {
             color="grey.400"
             sx={{ font: 'normal normal normal 15px/25px Roboto' }}
           >
-            Expiram em <br /> 14 dias
+            Expiram em <br /> 13 dias
           </Typography>
         </Stack>
       </Grid>

@@ -24,8 +24,8 @@ export const UserProfileDisplayInfo = () => {
   const handleSubmit = async () => {
     setLoading(true);
     await Promise.all([
-      services.user.changeUserAvatar(avatar),
-      ...(avatar && [services.user.changeUserName(userName)]),
+      services.user.changeUserName(userName),
+      ...(avatar && [services.user.changeUserAvatar(avatar)]),
     ])
       .then(() => {
         toast.success('Profile updated successfully!');

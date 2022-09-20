@@ -1,5 +1,12 @@
-import { Add } from '@mui/icons-material';
+import {
+  Add,
+  ArrowCircleDown,
+  ArrowCircleRight,
+  ArrowCircleUp,
+  Remove,
+} from '@mui/icons-material';
 import { Box, Paper, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import { IconButton, Tab, Tabs } from '../../../components';
 import { Avatar } from '../../../components/Avatar';
@@ -10,6 +17,8 @@ export const FeedbackHeader = () => {
     data: { targetUser, feedbackType },
     actions: { setModalOpen, changeFeedbackType },
   } = useFeedback();
+
+  const navigate = useNavigate();
 
   return (
     <Paper sx={{ mt: 8.5, mb: 4 }}>
@@ -46,12 +55,29 @@ export const FeedbackHeader = () => {
             <Tab label="Enviados" value="sent" />
           </Tabs>
           <IconButton
-            onClick={() => setModalOpen(true)}
+            onClick={() => navigate('/dark-coin')}
             size="large"
             sx={{
               position: 'absolute',
               bottom: 0,
               right: 0,
+              transform: 'translateY(50%)',
+              backgroundColor: 'primary.main',
+              color: 'primary.contrastText',
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+              },
+            }}
+          >
+            <ArrowCircleRight sx={{ fontSize: '32px' }} />
+          </IconButton>
+          <IconButton
+            onClick={() => setModalOpen(true)}
+            size="large"
+            sx={{
+              bottom: 0,
+              right: 0,
+              left: 950,
               transform: 'translateY(50%)',
               backgroundColor: 'primary.main',
               color: 'primary.contrastText',

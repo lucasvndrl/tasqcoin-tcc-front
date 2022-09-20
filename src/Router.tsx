@@ -10,6 +10,7 @@ export const Router: React.FC = () => {
       <Route path="/" element={<Wrapper />}>
         <Route path="/" element={<Feedback />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/dark-coin" element={<UserProfile />} />
       </Route>
     </Routes>
   );
