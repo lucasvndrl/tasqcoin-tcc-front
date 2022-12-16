@@ -2,8 +2,6 @@ import {
   FormControl,
   FormHelperText,
   Input,
-  InputLabel,
-  MenuItem,
   Select,
   Stack,
 } from '@mui/material';
@@ -12,7 +10,13 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { Button, Modal, TextField, Typography } from '../../../components';
+import {
+  Button,
+  MenuItem,
+  Modal,
+  TextField,
+  Typography,
+} from '../../../components';
 import { SearchInput } from '../../../components/SearchInput';
 import { Slider } from '../../../components/Slider';
 import { useAuth } from '../../../contexts';
@@ -24,18 +28,7 @@ type CreateFeedbackForm = {
   targetUser: UserData | undefined;
   amount: number;
   description: string;
-  coin_type: string;
-};
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
+  is_dark: 'true' | 'false';
 };
 
 export const FeedbackCreateModal = () => {
@@ -50,7 +43,6 @@ export const FeedbackCreateModal = () => {
 
   const [inputValue, setInputValue, debouncedInputValue] = useDebounceState('');
   const [options, setOptions] = useState<UserData[]>([]);
-  const [coinType, setCoinType] = useState('L');
 
   const {
     errors,
@@ -66,11 +58,15 @@ export const FeedbackCreateModal = () => {
       targetUser: undefined,
       amount: 0,
       description: '',
-      coin_type: coinType,
+      is_dark: 'false',
     },
-    onSubmit: async ({ targetUser, ...rest }) =>
+    onSubmit: async ({ targetUser, is_dark, ...rest }) =>
       services.feedback
-        .createFeedback({ user_to_id: targetUser.id, ...rest })
+        .createFeedback({
+          user_to_id: targetUser.id,
+          is_dark: is_dark === 'true',
+          ...rest,
+        })
         .then(() => {
           toast.success('Feedback created successfully!');
           reloadFeedbacks();
@@ -81,11 +77,23 @@ export const FeedbackCreateModal = () => {
       amount: yup
         .number()
         .min(1, 'Minumum amount required is 1')
-        .max(Number(user?.balance ?? 0), 'Invalid amount')
         .required('Required Field'),
       targetUser: yup.object().required('Required Field'),
     }),
   });
+
+  useEffect(() => {
+    setFieldValue(
+      'amount',
+      Math.min(
+        values.amount,
+        values.is_dark === 'true'
+          ? Number(user?.dark_balance ?? 0)
+          : Number(user?.balance ?? 0)
+      )
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.is_dark]);
 
   useEffect(() => {
     if (debouncedInputValue.length === 0) {
@@ -129,18 +137,20 @@ export const FeedbackCreateModal = () => {
             isOptionEqualToValue={(option, val) => option.alias === val.alias}
             filterOptions={(x) => x}
           />
-          <FormControl fullWidth>
-            <InputLabel>Tipo de moeda</InputLabel>
+          <FormControl>
+            <Typography variant="body1">Tipo de feedback</Typography>
             <Select
-              label="Tipo de moeda"
-              value={coinType}
-              defaultValue="Ligth"
-              onChange={(e) => setCoinType(e.target.value)}
-              MenuProps={MenuProps}
+              id="is_dark"
+              name="is_dark"
+              value={values.is_dark}
+              onChange={handleChange}
             >
-              <MenuItem value="L">Ligth coin</MenuItem>
-              <MenuItem value="D">Dark coin</MenuItem>
+              <MenuItem value="false">Positivo</MenuItem>
+              <MenuItem value="true">Negativo</MenuItem>
             </Select>
+            {touched.is_dark && errors.is_dark && (
+              <FormHelperText error>{errors.is_dark}</FormHelperText>
+            )}
           </FormControl>
           <Typography variant="body1" sx={{ mt: 2 }}>
             Quantidade de Pontos
@@ -151,7 +161,11 @@ export const FeedbackCreateModal = () => {
                 id="amount"
                 name="amount"
                 min={0}
-                max={Number(user?.balance ?? 0)}
+                max={
+                  values.is_dark === 'true'
+                    ? Number(user?.dark_balance ?? 0)
+                    : Number(user?.balance ?? 0)
+                }
                 value={values.amount}
                 onChange={handleChange}
                 valueLabelDisplay="auto"
@@ -164,7 +178,10 @@ export const FeedbackCreateModal = () => {
                 onChange={handleChange}
                 inputProps={{
                   min: 0,
-                  max: 100,
+                  max:
+                    values.is_dark === 'true'
+                      ? Number(user?.dark_balance ?? 0)
+                      : Number(user?.balance ?? 0),
                   type: 'number',
                   'aria-labelledby': 'input-slider',
                 }}

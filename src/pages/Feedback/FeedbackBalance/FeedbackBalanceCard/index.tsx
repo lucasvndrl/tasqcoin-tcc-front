@@ -1,9 +1,10 @@
 import { Paper, Stack } from '@mui/material';
 import { ReactNode } from 'react';
+
 import { Typography } from '../../../../components';
 
 type FeedbackBalanceCardProps = {
-  title: string;
+  title: string | ReactNode;
   icon: ReactNode;
   amount: number;
 };
@@ -15,7 +16,7 @@ export const FeedbackBalanceCard = ({
 }: FeedbackBalanceCardProps) => {
   return (
     <Paper sx={{ height: 90 }}>
-      <Stack justifyContent="space-between" sx={{ p: 2 }}>
+      <Stack justifyContent="space-between" sx={{ p: 2 }} direction="row">
         <Stack direction="row" justifyContent="space-between">
           <Typography
             sx={{ fontWeight: 'medium' }}
@@ -24,9 +25,13 @@ export const FeedbackBalanceCard = ({
           >
             {title}
           </Typography>
-          {icon}
         </Stack>
-        <Stack direction="row" justifyContent="flex-end">
+        <Stack
+          direction="column"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          {icon}
           <Typography variant="points">{amount}</Typography>
         </Stack>
       </Stack>

@@ -4,8 +4,9 @@ type FeedbackService = {
   listUserFeedbacks(
     payload?: ListFeedbackRequest
   ): ApiResponse<ListFeedbackResponse>;
-  getUserBalance(payload?: string): ApiResponse<number>;
-  getUserDarkBalance(payload?: string): ApiResponse<number>;
+  getUserBalance(
+    payload?: string
+  ): ApiResponse<{ balance: number; dark_balance: number }>;
   createFeedback(payload?: CreateFeedbackRequest): ApiResponse<void>;
 };
 
@@ -23,10 +24,4 @@ export const feedback: FeedbackService = {
       },
     }),
   createFeedback: async (payload?) => api.post('/feedbacks', payload),
-  getUserDarkBalance: async (payload?) =>
-    api.get('/feedbacks/dark-balance', {
-      params: {
-        ...(payload && { id: payload }),
-      },
-    }),
 };
